@@ -1,66 +1,74 @@
-let recipeModel = require("../models/recipeModel");
+import RecipeRepository from '../data/recipeRepo';
 
-let recipeController = {
-    getRecipes(request, response) {
-        recipeModel.getRecipes((error, data) => {
-            if (error) {
-                console.log(error);
-                response.status = 404;
-            }
-            else if (data) {
-                response.status = 200;
-                response.body(data);
-            }
-            return response;
-        });
-    },
-    addRecipe(request, response) {
-        console.log('Add recipe', request.body);
-        // Todo: add input sanitizing and validation
-        const recipe = {
-            name: request.body.name,
-            description: request.body.description,
-            ingredients: request.body.ingredients,
-            instructions: request.body.instructions
-        };
+class RecipeController {
+    constructor() {
+        this.recipeRepository = new RecipeRepository();
+    }
 
-        recipeModel.addRecipe(recipe, (error, data) => {
-            if (error) {
-                console.log(error);
-                response.status = 400;
-            }
-            else if (data) {
-                response.status = 201;
-                response.body(data);
-            }
-            return response;
-        });
-    },
-    editRecipe(request, response) {
-        console.log('Edit recipe', request.body);
-        // Todo: add input saniziting and validation
-        const recipe = {
-            name: request.body.name,
-            description: request.body.description,
-            ingredients: request.body.ingredients,
-            instructions: request.body.instructions
-        };
+    async getRecipes(request, response) {
+        try {
+            let recipes = await this.recipeRepository.findAll();
+            response.status(200).send(recipes);
+        } catch (error) {
+            console.log('An error occurred while retrieving all recipes', error);
+            response.status(500).send(error);
+        }
+    }
 
-        recipeModel.editRecipe(recipe, (error, data) => {
-            if (error) {
-                console.log(error);
-                response.status = 400;
-            }
-            else if (data) {
-                response.status = 200;
-                response.body(data);
-            }
-            return response;
-        })
-    },
-    deleteRecipe(request, response) {
+    async getRecipeById(request, response) {
+        try {
+            let recipe = await this.recipeRepository.findById(request.body.id);
+            response.status(200).send(recipe);
+        } catch (error) {
+            console.log('An error occurred while retrieving a recipe with id: ${request.body.id}', error);
+            response.status(500).send(error);
+        }
+    }
 
+    async addRecipe(request, response) {
+        try {
+            const recipe = {
+                name: request.body.name,
+                description: request.body.description,
+                ingredients: request.body.ingredients,
+                instructions: request.body.instructions
+                };
+
+            // Todo: sanitize the input
+            let result = await this.recipeRepository.create(recipe);
+            response.status(201).send(result);
+        } catch (error) {
+            console.log('An error occurred while adding the recipe', error);
+            response.status(500).send(error);
+        }
+    }
+
+    async editRecipe(request, response) {
+        try {
+            console.log('Editing recipe with id: ${request.body.id');
+            const recipe = {
+                name: request.body.name,
+                description: request.body.description,
+                ingredients: request.body.ingredients,
+                instructions: request.body.instructions
+            };
+            // Todo: sanitize the input
+            let result = await this.recipeRepository.update(request.body.id, recipe);
+            response.status(200).send(result);
+        } catch (error) {
+            console.log('An error occurred while updating the recipe', error);
+            response.status(500).send(error);
+        }
+    }
+
+    async deleteRecipe(request, response) {
+        try {
+            await this.recipeRepository.deleteRecipe(request.body.id);
+            response.status(200).send();
+        } catch (error) {
+            response.status(500).send(error);
+        }
     }
 };
 
-module.exports = recipeController;
+export default RecipeController;

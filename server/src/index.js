@@ -10,6 +10,6 @@ app.use(cors());
 app.use(express.json());
 app.use("/recipes", RecipeRoutes);
 
-app.listn(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });

@@ -1,22 +1,18 @@
-const mongoose = require('mongoose');
-import mongoConfig from ('mongoConnection');
-const path = require('node:path'); // this allows access to specific app/user folders on device, iirc
+import { openConnection, closeConnection } from './mongoClient';
 import Recipe from '../models/recipeModel';
-
-mongoose.connect('mongodb://localhost:27017/recipeDB', {useNewUrlParser: true})
-    .then(() => console.log('Connected to recipe db'))
-    .catch(error => console.log('A problem occurred when connecting to the recipe db', error));
 
 class RecipeRepository {
     async findById(id) {
-        await mongoose.connect(mongoConfig.uri, {
-            useNewUrlParser: true
-        }).then(() => {
-            console.log('Connected to recipe db');
-            return Recipe.findById(id).lean();
-        }).catch(error => {
-            console.log('A problem occurred when connecting to the recipe db', error);
-        });
+        try {
+            await openConnection();
+            let recipes = await Recipe.findById(id).lean();
+            return recipes;
+        } catch (error) {
+            console.log('There was an error retrieving the recipes', error);
+            return [];
+        } finally {
+            await closeConnection();
+        }
     }
 
     async findAll() {
