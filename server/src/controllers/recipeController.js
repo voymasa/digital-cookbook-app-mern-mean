@@ -1,4 +1,5 @@
 import RecipeRepository from '../data/recipeRepo';
+import { validationResult } from 'express-validator';
 
 class RecipeController {
     constructor() {
@@ -16,8 +17,13 @@ class RecipeController {
     }
 
     async getRecipeById(request, response) {
+        const errors = validationResult(request);
+        if(!errors.isEmpty()) {
+            response.status(400).json({ errors: errors.array});
+        }
+
         try {
-            let recipe = await this.recipeRepository.findById(request.body.id);
+            let recipe = await this.recipeRepository.findById(request.param.id);
             response.status(200).send(recipe);
         } catch (error) {
             console.log('An error occurred while retrieving a recipe with id: ${request.body.id}', error);
@@ -26,6 +32,11 @@ class RecipeController {
     }
 
     async addRecipe(request, response) {
+        const errors = validationResult(request);
+        if(!errors.isEmpty()) {
+            response.status(400).json({ errors: errors.array});
+        }
+
         try {
             const recipe = {
                 name: request.body.name,
@@ -44,6 +55,11 @@ class RecipeController {
     }
 
     async editRecipe(request, response) {
+        const errors = validationResult(request);
+        if(!errors.isEmpty()) {
+            response.status(400).json({ errors: errors.array});
+        }
+
         try {
             console.log('Editing recipe with id: ${request.body.id');
             const recipe = {
@@ -53,7 +69,7 @@ class RecipeController {
                 instructions: request.body.instructions
             };
             // Todo: sanitize the input
-            let result = await this.recipeRepository.update(request.body.id, recipe);
+            let result = await this.recipeRepository.update(request.param.id, recipe);
             response.status(200).send(result);
         } catch (error) {
             console.log('An error occurred while updating the recipe', error);
@@ -62,8 +78,13 @@ class RecipeController {
     }
 
     async deleteRecipe(request, response) {
+        const errors = validationResult(request);
+        if(!errors.isEmpty()) {
+            response.status(400).json({ errors: errors.array});
+        }
+
         try {
-            await this.recipeRepository.deleteRecipe(request.body.id);
+            await this.recipeRepository.deleteRecipe(request.param.id);
             response.status(200).send();
         } catch (error) {
             response.status(500).send(error);
