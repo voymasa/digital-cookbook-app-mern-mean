@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Stack from '@mui/material/Stack';
+import RecipeCard from './RecipeCard';
 
 const RecipeList = () => {
     const [recipes, setRecipes] = useState([]);
@@ -9,9 +10,11 @@ const RecipeList = () => {
     return (
         <>
             <Stack useFlexGap: true>
-                recipes.map((rec) => {
-
-                })
+                {recipes.map((rec) => 
+                    <RecipeCard>
+                        
+                    </RecipeCard>
+                )}
             </Stack>
         </>
     );
