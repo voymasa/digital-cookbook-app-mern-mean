@@ -7,7 +7,7 @@ When the user clicks on this component it should open the RecipeDetails form and
 for the recipe.
 */
 
-const RecipeCard = () => {
+const RecipeCard = (name, thumb, servings, prep, cook) => {
 
     return (
         <>

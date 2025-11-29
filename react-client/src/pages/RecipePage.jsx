@@ -1,4 +1,5 @@
 import react from 'react';
+import RecipeList from '../components/Recipe/RecipeList';
 
 /*
 This page contains the components to list the recipes the user currently has.
@@ -11,6 +12,11 @@ const RecipePage = () => {
 
     return (
         <>
+            <RecipeList/>
+            <Fab color="primary" arial-label="add"
+                onclick={() => newRecipe()}>
+                <AddIcon />
+            </Fab>
         </>
     );
 }
