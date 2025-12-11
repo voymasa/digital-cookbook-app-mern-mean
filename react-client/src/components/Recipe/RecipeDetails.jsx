@@ -4,8 +4,10 @@ This component should have a create button if it is a new recipe, or a save butt
 it is a recipe that already exists (i.e. edit/update recipe).
 
 */
+import { useState } from 'react';
 
-const RecipeDetails = () => {
+const RecipeDetails = (recipeInfo) => {
+    const [recipe, setRecipe] = useState(recipeInfo);
 
     return (
         <>

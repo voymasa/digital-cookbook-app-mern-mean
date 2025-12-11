@@ -10,6 +10,7 @@ functionality should be in the recipe card component itself, likely)
 const RecipePage = () => {
 
 
+
     return (
         <>
             <RecipeList/>
@@ -19,6 +20,10 @@ const RecipePage = () => {
             </Fab>
         </>
     );
+}
+
+const newRecipe = () => {
+    // create a new recipe model and pass it to the recipe details page
 }
 
 export default RecipePage;
